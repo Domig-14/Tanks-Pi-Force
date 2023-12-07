@@ -69,6 +69,7 @@ class Title (simpleGE.Scene):
 class Ending (simpleGE.Scene):
     def __init__(self):
         super().__init__()
+        pygame.mouse.set_visible(True)
         
         self.background.fill((45, 61, 29))
         
@@ -121,7 +122,9 @@ class Game (simpleGE.Scene):
         self.playerShell = PlayerShell(self)
         self.enemyShell = EnemyShell(self)
         self.keg = Keg(self)
-        #self.enemyTank = EnemyTank(self)
+        self.crosshair = Crosshair(self)
+        
+        pygame.mouse.set_visible(False)
         
         self.NUM_PlayerShells = 20
         self.currentPlayerShell = 0
@@ -166,7 +169,7 @@ class Game (simpleGE.Scene):
         
         self.kills = 0
         
-        self.sprites = [self.playerTank, self.playerCannon, self.playerShell, self.enemyTank, self.enemyShell, self.lblHealth, self.lblShield, self.keg]
+        self.sprites = [self.playerTank, self.playerCannon, self.playerShell, self.enemyTank, self.enemyShell, self.lblHealth, self.lblShield, self.keg, self.crosshair]
         
     def update(self):
         self.playerCannon.y = self.playerTank.y
@@ -176,6 +179,7 @@ class Game (simpleGE.Scene):
         self.lblShield.text = f"Shield: {self.shield} %"
         
         if self.isKeyPressed(pygame.K_o):
+           pygame.mouse.set_visible(True)
            end = Ending()
            end.start()
            self.stop
@@ -184,6 +188,7 @@ class Game (simpleGE.Scene):
             self.health = 0
         
         if self.health == 0:
+            pygame.mouse.set_visible(True)
             end = Ending()
             end.start()
             self.stop()
@@ -225,7 +230,19 @@ class Keg (simpleGE.BasicSprite):
                     self.scene.shield = 100
                 self.Respawn()       
         
+class Crosshair (simpleGE.SuperSprite):
+    def __init__ (self, scene):
+        super().__init__(scene)
+        self.setImage("Crosshair.png")
+        self.setSize(32,32)
+        self.x = 0
+        self.y = 0
+    
+    def checkEvents(self):
+        self.setPosition(pygame.mouse.get_pos())
         
+            
+    
 class PlayerTank (simpleGE.SuperSprite):
     def __init__ (self, scene):
         super().__init__(scene)
@@ -422,6 +439,7 @@ class EnemyShell (simpleGE.SuperSprite):
 def main():
     title = Title()
     title.start()
+    
     
 if __name__ == "__main__":
     main()
